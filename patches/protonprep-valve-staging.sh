@@ -370,9 +370,14 @@
 
     # https://github.com/ValveSoftware/Proton/issues/6717
     # https://gitlab.winehq.org/wine/wine/-/merge_requests/4428
-    echo "WINE: -GAME FIXES- Fix Farlight 84 crash"
+    echo "WINE: -PENDING- Fix Farlight 84 crash"
     patch -Np1 < ../patches/wine-hotfixes/pending/4428.patch
 
+    # kernel side: https://discord.com/channels/110175050006577152/1042846022596042792/1211503288596434994
+    # wine side: https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/proton-cachyos/fastsync.patch
+    # proton side: https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/proton-cachyos/disable-fastsync.patch
+    echo "WINE: -PENDING- Enable NTsync"
+    patch -Np1 < ../patches/wine-hotfixes/pending/ntsync.patch
 
 ### END WINE PENDING UPSTREAM SECTION ###
 
