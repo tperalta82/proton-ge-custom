@@ -39,7 +39,6 @@
 #include <winternl.h>
 #include <shellapi.h>
 #include <shlwapi.h>
-#include <shlobj.h>
 #include <string.h>
 #include <stdio.h>
 #include <limits.h>
@@ -73,6 +72,14 @@
 #include <msi.h>
 
 WINE_DEFAULT_DEBUG_CHANNEL(steam);
+
+/* from shlobj.h, which breaks because of DECLSPEC_IMPORT EXTERN_C in C++ */
+#define CSIDL_LOCAL_APPDATA 0x001c
+#define CSIDL_FLAG_CREATE   0x8000
+
+EXTERN_C WINSHELLAPI HRESULT WINAPI SHGetFolderPathA(HWND hwnd, int nFolder, HANDLE hToken, DWORD dwFlags, LPSTR pszPath);
+EXTERN_C WINSHELLAPI HRESULT WINAPI SHGetFolderPathW(HWND hwnd, int nFolder, HANDLE hToken, DWORD dwFlags, LPWSTR pszPath);
+#define SHGetFolderPath WINELIB_NAME_AW(SHGetFolderPath)
 
 static const WCHAR PROTON_VR_RUNTIME_W[] = {'P','R','O','T','O','N','_','V','R','_','R','U','N','T','I','M','E',0};
 static const WCHAR VR_PATHREG_OVERRIDE_W[] = {'V','R','_','P','A','T','H','R','E','G','_','O','V','E','R','R','I','D','E',0};
@@ -648,7 +655,7 @@ static void parse_extensions(const char *in, uint32_t *out_count,
 
 extern "C"
 {
-    VkPhysicalDevice WINAPI __wine_get_native_VkPhysicalDevice(VkPhysicalDevice phys_dev);
+    VkPhysicalDevice __wine_get_native_VkPhysicalDevice(VkPhysicalDevice phys_dev);
 };
 
 static void *get_winevulkan_unix_lib_handle(HMODULE hvulkan)
