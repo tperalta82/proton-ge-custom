@@ -317,9 +317,8 @@
 
 ### (2-6) PROTON-GE ADDITIONAL CUSTOM PATCHES ###
 
-# NEEDS REBASE
-#    echo "WINE: -FSR- fullscreen hack fsr patch"
-#    patch -Np1 < ../patches/proton/47-proton-fshack-AMD-FSR-complete.patch
+    echo "WINE: -FSR- fullscreen hack fsr patch"
+    patch -Np1 < ../patches/proton/47-proton-fshack-AMD-FSR-complete.patch
 
     #echo "WINE: -FSR- fullscreen hack fsr patch"
     #patch -Np1 < ../patches/proton/48-proton-fshack_amd_fsr.patch
