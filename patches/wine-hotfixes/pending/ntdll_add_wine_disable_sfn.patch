@@ -61,11 +61,11 @@ diff --git a/dlls/ntdll/unix/unix_private.h b/dlls/ntdll/unix/unix_private.h
 index cae15947bbd..6403dad858d 100644
 --- a/dlls/ntdll/unix/unix_private.h
 +++ b/dlls/ntdll/unix/unix_private.h
-@@ -152,6 +152,7 @@ extern BOOL is_wow64 DECLSPEC_HIDDEN;
- extern struct ldt_copy __wine_ldt_copy DECLSPEC_HIDDEN;
+@@ -182,6 +182,7 @@ extern SYSTEM_CPU_INFORMATION cpu_info;
+ extern struct ldt_copy __wine_ldt_copy;
  #endif
  
-+extern BOOL disable_sfn DECLSPEC_HIDDEN;
- extern BOOL ac_odyssey DECLSPEC_HIDDEN;
- extern BOOL fsync_simulate_sched_quantum DECLSPEC_HIDDEN;
- extern BOOL alert_simulate_sched_quantum DECLSPEC_HIDDEN;
++extern BOOL disable_sfn;
+ extern BOOL ac_odyssey;
+ extern BOOL fsync_simulate_sched_quantum;
+ extern BOOL alert_simulate_sched_quantum;
