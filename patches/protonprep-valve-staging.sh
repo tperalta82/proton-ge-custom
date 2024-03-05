@@ -117,13 +117,7 @@
     -W ntdll_reg_flush \
     -W odbc-remove-unixodbc \
     -W winedevice-Default_Drivers \
-    -W winex11-Fixed-scancodes \
-    -W mmsystem.dll16-MIDIHDR_Refcount \
-    -W vcomp_for_dynamic_init_i8 \
-    -W gdi32-rotation \
-    -W winemapi-user-xdg-mail \
-    -W shell32-IconCache \
-    -W d3dx9_36-D3DXDisassembleShader
+    -W winex11-Fixed-scancodes
 
     # NOTE: Some patches are applied manually because they -do- apply, just not cleanly, ie with patch fuzz.
     # A detailed list of why the above patches are disabled is listed below:
@@ -187,12 +181,6 @@
     # ** winedevice-Default_Drivers - applied manually
     # ** winex11-Fixed-scancodes - applied manually
     # odbc-remove-unixodbc - not required, used for ODBC drivers for use with SQL applications, not gaming related.
-    # ** mmsystem.dll16-MIDIHDR_Refcount - applied manually
-    # ** vcomp_for_dynamic_init_i8 - applied manually
-    # ** gdi32-rotation - applied manually
-    # ** winemapi-user-xdg-mail - applied manually
-    # ** shell32-IconCache - applied manually
-    # ** d3dx9_36-D3DXDisassembleShader - applied manually
     #
     # Paul Gofman — Yesterday at 3:49 PM
     # that’s only for desktop integration, spamming native menu’s with wine apps which won’t probably start from there anyway
@@ -263,27 +251,6 @@
     patch -Np1 < ../wine-staging/patches/fltmgr.sys-FltBuildDefaultSecurityDescriptor/0002-fltmgr.sys-Create-import-library.patch
     patch -Np1 < ../wine-staging/patches/fltmgr.sys-FltBuildDefaultSecurityDescriptor/0003-ntoskrnl.exe-Add-FltBuildDefaultSecurityDescriptor-t.patch
     
-    echo "WINE: -STAGING- mmsystem.dll16-MIDIHDR_Refcount manually applied"
-    patch -Np1 < ../patches/wine-hotfixes/staging/mmsystem.dll16-MIDIHDR_Refcount/0001-mmsystem.dll16-Refcount-midihdr-to-work-around-buggy.patch
-    patch -Np1 < ../patches/wine-hotfixes/staging/mmsystem.dll16-MIDIHDR_Refcount/0002-mmsystem.dll16-Translate-MidiIn-messages.patch
-    
-    echo "WINE: -STAGING- vcomp_for_dynamic_init_i8 manually applied"
-    patch -Np1 < ../patches/wine-hotfixes/staging/vcomp_for_dynamic_init_i8/0001-vcomp-Implement-_vcomp_for_dynamic_init_i8.patch
-
-    echo "WINE: -STAGING- gdi32-rotation manually applied"
-    patch -Np1 < ../patches/wine-hotfixes/staging/gdi32-rotation/0001-gdi32-fix-for-rotated-Arc-ArcTo-Chord-and-Pie-drawin.patch
-    patch -Np1 < ../patches/wine-hotfixes/staging/gdi32-rotation/0002-gdi32-fix-for-rotated-ellipse.patch
-
-    echo "WINE: -STAGING- winemapi-user-xdg-mail manually applied"
-    patch -Np1 < ../patches/wine-hotfixes/staging/winemapi-user-xdg-mail/0001-winemapi-Directly-use-xdg-email-if-available-enablin.patch
-
-    echo "WINE: -STAGING- shell32-IconCache manually applied"
-    patch -Np1 < ../patches/wine-hotfixes/staging/shell32-IconCache/0001-shell32-iconcache-Generate-icons-from-available-icons-.patch
-    
-    echo "WINE: -STAGING- d3dx9_36-D3DXDisassembleShader manually applied"
-    patch -Np1 < ../patches/wine-hotfixes/staging/d3dx9_36-D3DXDisassembleShader/0004-d3dx9_36-Implement-D3DXDisassembleShader.patch
-    patch -Np1 < ../patches/wine-hotfixes/staging/d3dx9_36-D3DXDisassembleShader/0005-d3dx9_36-tests-Add-initial-tests-for-D3DXDisassemble.patch
-    patch -Np1 < ../patches/wine-hotfixes/staging/d3dx9_36-D3DXDisassembleShader/0006-d3dx9_36-tests-Add-additional-tests-for-special-case.patch
 
 ### END WINE STAGING APPLY SECTION ###
 
@@ -298,6 +265,10 @@
 ### END GAME PATCH SECTION ###
 
 ### (2-4) WINE HOTFIX/BACKPORT SECTION ###
+
+    # https://github.com/ValveSoftware/Proton/issues/7547#issuecomment-1975279156
+    echo "WINE: -BACKPORT- EGS store fix"
+    patch -Np1 < ../patches/wine-hotfixes/upstream/egs-store-fixup-stub.patch
 
 ### END WINE HOTFIX/BACKPORT SECTION ###
 
@@ -319,12 +290,6 @@
 
     echo "WINE: -FSR- fullscreen hack fsr patch"
     patch -Np1 < ../patches/proton/47-proton-fshack-AMD-FSR-complete.patch
-
-    #echo "WINE: -FSR- fullscreen hack fsr patch"
-    #patch -Np1 < ../patches/proton/48-proton-fshack_amd_fsr.patch
-
-    #echo "WINE: -FSR- enable FSR flag by default (fixes broken fs hack scaling in some games like Apex and FFXIV)"
-    #patch -Np1 < ../patches/proton/71-invert-fsr-logic.patch
 
     #echo "WINE: -Nvidia Reflex- Support VK_NV_low_latency2"
     #patch -Np1 < ../patches/proton/83-nv_low_latency_wine.patch
