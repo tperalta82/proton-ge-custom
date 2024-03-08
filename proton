@@ -1341,7 +1341,7 @@ class Session:
         self.check_environment("PROTON_HEAP_ZERO_MEMORY", "heapzeromemory")
         self.check_environment("PROTON_DISABLE_NVAPI", "disablenvapi")
         self.check_environment("PROTON_FORCE_NVAPI", "forcenvapi")
-	self.check_environment("PROTON_HIDE_APU", "hideapu")
+        self.check_environment("PROTON_HIDE_APU", "hideapu")
         self.check_environment("PROTON_ENABLE_D8VK", "enabled8vk")
 
         if "noesync" in self.compat_config:
