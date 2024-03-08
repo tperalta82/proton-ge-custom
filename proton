@@ -1036,6 +1036,8 @@ def default_compat_config():
                 #affected by CW bug 23184
                 "2229490", #Iragon: Prologue
                 "1522260", #Iragon: Prologue 18+
+                "2229300", #Iragon
+                "1097480", #Iragon 18+
                 ]:
             ret.add("nomfdxgiman")
 
@@ -1100,6 +1102,7 @@ def default_compat_config():
                 "383120", #Empyrion - Galactic Survival
                 "2371630", #Sword Art Online: Integral Factor
                 "460790", #Bayonetta
+                "273590", #Descent 3
                 ]:
             ret.add("gamedrive")
 
@@ -1113,6 +1116,7 @@ def default_compat_config():
             ret.add("heapdelayfree")
 
         if appid in [
+                "21980", #Call of Juarez: Bound in Blood
                 "553850", #Helldivers 2
                 ]:
             ret.add("heapzeromemory")
@@ -1149,6 +1153,11 @@ def default_compat_config():
                 "2395210" #Tony Hawk's Pro Skater 1 + 2
                 ]:
             ret.add("forcenvapi")
+
+        if appid in [
+                "1252330" #Deathloop
+                ]:
+            ret.add("hideapu")
 
     return ret
 
@@ -1332,7 +1341,7 @@ class Session:
         self.check_environment("PROTON_HEAP_ZERO_MEMORY", "heapzeromemory")
         self.check_environment("PROTON_DISABLE_NVAPI", "disablenvapi")
         self.check_environment("PROTON_FORCE_NVAPI", "forcenvapi")
-        self.check_environment("PROTON_ENABLE_AMD_AGS", "enableamdags")
+	self.check_environment("PROTON_HIDE_APU", "hideapu")
         self.check_environment("PROTON_ENABLE_D8VK", "enabled8vk")
 
         if "noesync" in self.compat_config:
@@ -1384,6 +1393,9 @@ class Session:
 
         if "hidenvgpu" in self.compat_config and "forcenvapi" not in self.compat_config:
             self.env["WINE_HIDE_NVIDIA_GPU"] = "1"
+
+        if "hideapu" in self.compat_config:
+            self.env["WINE_HIDE_APU"] = "1"
 
         if "usenativexinput13" in self.compat_config:
             self.dlloverrides["xinput1_3"] = "n"
