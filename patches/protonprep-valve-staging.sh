@@ -266,10 +266,6 @@
 
 ### (2-4) WINE HOTFIX/BACKPORT SECTION ###
 
-    # https://github.com/ValveSoftware/Proton/issues/7547#issuecomment-1975279156
-    echo "WINE: -BACKPORT- EGS store fix"
-    patch -Np1 < ../patches/wine-hotfixes/upstream/egs-store-fixup-stub.patch
-
 ### END WINE HOTFIX/BACKPORT SECTION ###
 
 ### (2-5) WINE PENDING UPSTREAM SECTION ###
