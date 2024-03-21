@@ -73,6 +73,7 @@
     -W eventfd_synchronization \
     -W dbghelp-Debug_Symbols \
     -W ddraw-Device_Caps \
+    -W ddraw-GetPickRecords \
     -W Pipelight \
     -W server-PeekMessage \
     -W server-Realtime_Priority \
@@ -134,6 +135,7 @@
     # eventfd_synchronization - already applied
     # ddraw-Device_Caps - conflicts with proton's changes
     # ddraw-version-check - conflicts with proton's changes, disabled in 8.0
+    # ddraw-GetPickRecords - applied manually
 
     # dbghelp-Debug_Symbols - see below:
     # Sancreed — 11/21/2021
@@ -194,11 +196,14 @@
     patch -Np1 < ../patches/wine-hotfixes/staging/loader-KeyboardLayouts/0001-loader-Add-Keyboard-Layouts-registry-enteries.patch
     patch -Np1 < ../patches/wine-hotfixes/staging/loader-KeyboardLayouts/0002-user32-Improve-GetKeyboardLayoutList.patch
 
+    echo "WINE: -STAGING- ddraw-GetPickRecords manually applied"
+    patch -Np1 < ../patches/wine-hotfixes/staging/ddraw-GetPickRecords/0001-ddraw-Implement-Pick-and-GetPickRecords.patch
+
     echo "WINE: -STAGING- ntdll-Hide_Wine_Exports manually applied"
     patch -Np1 < ../wine-staging/patches/ntdll-Hide_Wine_Exports/0001-ntdll-Add-support-for-hiding-wine-version-informatio.patch
 
     echo "WINE: -STAGING- ntdll-WRITECOPY manually applied"
-    patch -Np1 < ../wine-staging/patches/staging/ntdll-WRITECOPY/0007-ntdll-Report-unmodified-WRITECOPY-pages-as-shared.patch
+    patch -Np1 < ../patches/wine-hotfixes/staging/ntdll-WRITECOPY/0007-ntdll-Report-unmodified-WRITECOPY-pages-as-shared.patch
 
     echo "WINE: -STAGING- wineboot-ProxySettings manually applied"
     patch -Np1 < ../patches/wine-hotfixes/staging/wineboot-ProxySettings/0001-wineboot-Initialize-proxy-settings-registry-key.patch
