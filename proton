@@ -40,7 +40,7 @@ from random import randrange
 #To enable debug logging, copy "user_settings.sample.py" to "user_settings.py"
 #and edit it if needed.
 
-CURRENT_PREFIX_VERSION="GE-Proton9-1"
+CURRENT_PREFIX_VERSION="GE-Proton9-2"
 
 PFX="Proton: "
 ld_path_var = "LD_LIBRARY_PATH"
@@ -229,9 +229,9 @@ def copyfile_reflink(srcname, dstname):
                 while bytes_to_copy > 0:
                     bytes_to_copy -= copy_file_range(src.fileno(), dst.fileno(), bytes_to_copy)
         except OSError as e:
-            if e.errno not in (errno.EXDEV, errno.ENOSYS, errno.EINVAL):
+            if e.errno not in (errno.EXDEV, errno.ENOSYS, errno.EINVAL, errno.EOPNOTSUPP):
                 raise e
-            if e.errno == errno.ENOSYS:
+            if e.errno == errno.ENOSYS or e.errno == errno.EOPNOTSUPP:
                 copyfile = shutil.copyfile
             shutil.copyfile(srcname, dstname)
 
@@ -1141,6 +1141,10 @@ def default_compat_config():
                 "1418100", #Swords of Legends Online
                 "2080180", #Go Home Annie Demo
                 "1939100", #Go Home Annie
+                "108710", #Alan Wake
+                "435150", #Divinity: Original Sin 2 - Definitive Edition
+                "2420110", #Horizon Forbidden West
+                "505170", #Carmageddon: Max Damage
                 ]:
             ret.add("disablenvapi")
 
@@ -1482,7 +1486,7 @@ class Session:
         if "wined3d9" in self.compat_config:
             self.dlloverrides["d3d9"] = "b"
 
-        if "enablenvapi" in self.compat_config or "forcenvapi" in self.compat_config:
+        if "disablenvapi" not in self.compat_config or "forcenvapi" in self.compat_config:
             self.env["DXVK_ENABLE_NVAPI"] = "1"
 
         if "forcenvapi" in self.compat_config:
@@ -1526,7 +1530,7 @@ class Session:
         # Prevent this warning for non-steam games:
         # [S_API FAIL] SteamAPI_Init() failed; no appID found.
         # Either launch the game from Steam, or put the file steam_appid.txt containing the correct appID in your game folder.
-        elif "ULWGL_ID" in os.environ:
+        elif "UMU_ID" in os.environ:
             log(sys.argv[2])
             if len(sys.argv) >=  3 and sys.argv[2].startswith('/'):
                 log("Executable a unix path, launching with /unix option.")
