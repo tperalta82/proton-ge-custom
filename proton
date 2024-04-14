@@ -45,6 +45,37 @@ CURRENT_PREFIX_VERSION="GE-Proton9-3"
 PFX="Proton: "
 ld_path_var = "LD_LIBRARY_PATH"
 
+# If -steamdeck mode is enabled, try to copy existing game prefixes to steamdeck's prefix location -- this helps to preserve mods and saves across systems
+# This will overwrite existing files, but it will not delete any files that aren't being replaced.
+# For example if you have mod1 and mod2 on the game partition, and mod1 and mod3 on the steamdeck, mod1 will get replaced on the steamdeck and mod2 will get copied over, mod3 will remain untouched on the steamdeck.
+if os.getenv("SteamDeck") == "1" and os.getenv("COPYPREFIX") == "1":
+    # Get the value of the STEAM_COMPAT_INSTALL_PATH environment variable
+    steam_compat_install_path = os.getenv('STEAM_COMPAT_INSTALL_PATH')
+
+    # Navigate up two directories
+    parent_directory = Path(steam_compat_install_path).parents[1]
+
+    # Check if the "compatdata/<steam game>" folder exists and is not empty
+    compatdata_path = parent_directory / "compatdata" / str(os.environ.get("SteamAppId", 0))
+
+    if compatdata_path.exists() and os.listdir(compatdata_path):
+        # Define the destination directory
+        steamdeck_compatdata = Path(os.environ["STEAM_BASE_FOLDER"]) / "steamapps" / "compatdata" / str(os.environ.get("SteamAppId", 0))
+
+        # Copy the "compatdata/<steam game>" folder to the destination directory
+        # Use dirs_exist_ok=True to avoid FileExistsError if the destination directory already exists
+        shutil.copytree(compatdata_path, steamdeck_compatdata, dirs_exist_ok=True, symlinks=True)
+
+    # Check if the "shadercache/<steam game>" folder exists and is not empty
+    shadercache_path = parent_directory / "shadercache" / str(os.environ.get("SteamAppId", 0))
+
+    if shadercache_path.exists() and os.listdir(shadercache_path):
+        # Define the destination directory
+        steamdeck_shadercache = Path(os.environ["STEAM_BASE_FOLDER"]) / "steamapps" / "shadercache" / str(os.environ.get("SteamAppId", 0))
+        # Copy the "shadercache/<steam game>" folder to the destination directory
+        # Use dirs_exist_ok=True to avoid FileExistsError if the destination directory already exists
+        shutil.copytree(shadercache_path, steamdeck_shadercache, dirs_exist_ok=True, symlinks=True)
+
 def file_exists(s, *, follow_symlinks):
     if follow_symlinks:
         #'exists' returns False on broken symlinks
