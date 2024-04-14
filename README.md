@@ -118,24 +118,37 @@ This section is for those that use the native version of Steam.
 *Terminal example based on Latest Release*
 ```bash
 # make temp working directory
+echo "Creating temporary working directory..."
+rm -rf /tmp/proton-ge-custom
 mkdir /tmp/proton-ge-custom
 cd /tmp/proton-ge-custom
 
-# download  tarball
-curl -sLOJ "$(curl -s https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest | grep browser_download_url | cut -d\" -f4 | grep .tar.gz)"
+# download tarball
+echo "Fetching tarball URL..."
+tarball_url=$(curl -s https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest | grep browser_download_url | cut -d\" -f4 | grep .tar.gz)
+tarball_name=$(basename $tarball_url)
+echo "Downloading tarball: $tarball_name..."
+curl -# -L $tarball_url -o $tarball_name 2>&1
 
 # download checksum
-curl -sLOJ "$(curl -s https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest | grep browser_download_url | cut -d\" -f4 | grep .sha512sum)"
+echo "Fetching checksum URL..."
+checksum_url=$(curl -s https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest | grep browser_download_url | cut -d\" -f4 | grep .sha512sum)
+checksum_name=$(basename $checksum_url)
+echo "Downloading checksum: $checksum_name..."
+curl -# -L $checksum_url -o $checksum_name 2>&1
 
 # check tarball with checksum
-sha512sum -c ./*.sha512sum
+echo "Verifying tarball $tarball_name with checksum $checksum_name..."
+sha512sum -c $checksum_name
 # if result is ok, continue
 
 # make steam directory if it does not exist
+echo "Creating Steam directory if it does not exist..."
 mkdir -p ~/.steam/root/compatibilitytools.d
 
 # extract proton tarball to steam directory
-tar -xf GE-Proton*.tar.gz -C ~/.steam/root/compatibilitytools.d/
+echo "Extracting $tarball_name to Steam directory..."
+tar -xf $tarball_name -C ~/.steam/root/compatibilitytools.d/
 echo "All done :)"
 ```
 
