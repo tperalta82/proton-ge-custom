@@ -292,6 +292,9 @@
     echo "WINE: -FSR- fullscreen hack fsr patch"
     patch -Np1 < ../patches/proton/47-proton-fshack-AMD-FSR-complete.patch
 
+    echo "WINE: -PENDING- Add options to disable proton media converter."
+    patch -Np1 < ../patches/wine-hotfixes/pending/add-envvar-to-gate-media-converter.patch
+
     #echo "WINE: -Nvidia Reflex- Support VK_NV_low_latency2"
     #patch -Np1 < ../patches/proton/83-nv_low_latency_wine.patch
 
