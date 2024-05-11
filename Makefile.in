@@ -281,7 +281,8 @@ FFMPEG_CONFIGURE_ARGS := \
 	--enable-decoder=wmv1 \
 	--enable-decoder=h264 \
 	--enable-decoder=aac \
-	--enable-demuxer=xwma
+	--enable-demuxer=xwma \
+	--disable-inline-asm
 
 $(eval $(call rules-source,ffmpeg,$(SRCDIR)/ffmpeg))
 $(eval $(call rules-configure,ffmpeg,32))
@@ -806,6 +807,9 @@ $(OBJ)/.d8vk-post-build32:
 	rm -f "$(DST_DIR)"/lib/wine/d8vk/version && if test -e $(SRCDIR)/.git; then ( cd $(SRCDIR) && git submodule status -- d8vk ) > "$(DST_DIR)"/lib/wine/d8vk/version; fi
 	touch $@
 
+# wine builds DLLs with the same names, we need to differentiate the timestamps
+D8VK_SOURCE_DATE_EPOCH32 := $(shell expr $(BASE_SOURCE_DATE_EPOCH32) - 1)
+D8VK_SOURCE_DATE_EPOCH64 := $(shell expr $(BASE_SOURCE_DATE_EPOCH64) - 1)
 
 ##
 ## vkd3d
