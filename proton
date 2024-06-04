@@ -1685,7 +1685,7 @@ class Session:
             after_winetricks = self.cmdlineappend.split('winetricks', 1)[1]
             arguments = after_winetricks.split()
             if len(arguments) == 0:
-                protonfixes.util.protontricks(gui)
+                protonfixes.util.protontricks('gui')
             else:
                 protonfixes.util.protontricks(arguments)
             sys.exit(0)
