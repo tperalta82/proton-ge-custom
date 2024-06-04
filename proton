@@ -41,7 +41,7 @@ from pathlib import Path
 #To enable debug logging, copy "user_settings.sample.py" to "user_settings.py"
 #and edit it if needed.
 
-CURRENT_PREFIX_VERSION="GE-Proton9-5"
+CURRENT_PREFIX_VERSION="GE-Proton9-6"
 
 PFX="Proton: "
 ld_path_var = "LD_LIBRARY_PATH"
@@ -1212,6 +1212,7 @@ def default_compat_config():
                 "499100", #Dark Parables: The Exiled Prince Collector's Edition (499100)
                 "1404090", #Trivia Tricks
                 "2052410", #WITCH ON THE HOLY NIGHT
+                "789910", #Planet of the Apes: Last Frontier
                 ]:
             ret.add("heapdelayfree")
 
@@ -1261,6 +1262,8 @@ def default_compat_config():
                 ]:
             ret.add("hideapu")
 
+    if "STEAM_COMPAT_APP_ID" in os.environ:
+        appid = os.environ["STEAM_COMPAT_APP_ID"]
         if appid in [
                 "7000", # Tomb Raider: Legend
                 "8000", # Tomb Raider: Anniversary
@@ -1500,6 +1503,9 @@ class Session:
             self.env["MESA_EXTENSION_MAX_YEAR"] = "2003"
             #nvidia override
             self.env["__GL_ExtensionStringVersion"] = "17700"
+
+        if os.environ.get("SteamGameId", 0) == "444930":
+            self.env["MESA_EXTENSION_OVERRIDE"] = "-GL_ARB_bindless_texture"
 
         if "forcelgadd" in self.compat_config:
             self.env["WINE_LARGE_ADDRESS_AWARE"] = "1"
