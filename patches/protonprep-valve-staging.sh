@@ -294,6 +294,9 @@
     echo "WINE: -PENDING- ncrypt: NCryptDecrypt implementation (PSN Login for Ghost of Tsushima)"
     patch -Np1 < ../patches/wine-hotfixes/pending/NCryptDecrypt_implementation.patch
 
+
+    echo "WINE: -PENDING- DXGI_FORMAT_R8G8B8A8_UNORM: Suport for DXGI_FORMAT_R8G8B8A8_UNORM on d2d_wic_render_target_init (Alt:V GTA V coustom client)"
+    patch -Np1 < ../patches/wine-hotfixes/pending/support_for_DXGI_FORMAT_R8G8B8A8_UNORM.patch
 ### END WINE PENDING UPSTREAM SECTION ###
 
 
