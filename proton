@@ -1024,26 +1024,19 @@ class CompatData:
                 try_copy(g_proton.lib_dir + "vkd3d/libvkd3d-shader-1.dll", "drive_c/windows/syswow64",
                         prefix=self.prefix_dir, track_file=tracked_files, link_debug=True)
 
-                enable_d8vk = "enabled8vk" in g_session.compat_config
-
                 if use_wined3d:
                     dxvkfiles = []
-                    d8vkfiles = []
                     vkd3d_protonfiles = []
                     wined3dfiles = ["d3d12", "d3d11", "d3d10", "d3d10core", "d3d10_1", "d3d9", "d3d8"]
                 else:
-                    dxvkfiles = ["d3d11", "d3d10core", "d3d9"]
-                    d8vkfiles = ["d3d8", "d3d9"] if enable_d8vk else []
+                    dxvkfiles = ["d3d11", "d3d10core", "d3d9", "d3d8"]
                     vkd3d_protonfiles = ["d3d12", "d3d12core"]
-                    wined3dfiles = [] if enable_d8vk else ["d3d8"]
+                    wined3dfiles = []
 
                 if use_dxvk_dxgi:
                     dxvkfiles.append("dxgi")
                 else:
                     wined3dfiles.append("dxgi")
-
-                if dxvkfiles and enable_d8vk:
-                    dxvkfiles.remove("d3d9")
 
                 for f in wined3dfiles:
                     try_copy(g_proton.default_pfx_dir + "drive_c/windows/system32/" + f + ".dll", "drive_c/windows/system32",
@@ -1478,6 +1471,7 @@ class Session:
         self.check_environment("PROTON_NO_D3D11", "nod3d11")
         self.check_environment("PROTON_NO_D3D10", "nod3d10")
         self.check_environment("PROTON_NO_D9VK",  "nod3d9")
+        self.check_environment("PROTON_NO_D8VK",  "nod3d8")
         self.check_environment("PROTON_NO_ESYNC", "noesync")
         self.check_environment("PROTON_NO_FSYNC", "nofsync")
         self.check_environment("PROTON_FORCE_LARGE_ADDRESS_AWARE", "forcelgadd")
@@ -1492,7 +1486,6 @@ class Session:
         self.check_environment("PROTON_DISABLE_NVAPI", "disablenvapi")
         self.check_environment("PROTON_FORCE_NVAPI", "forcenvapi")
         self.check_environment("PROTON_HIDE_APU", "hideapu")
-        self.check_environment("PROTON_ENABLE_D8VK", "enabled8vk")
 
         if "noesync" in self.compat_config:
             self.env.pop("WINEESYNC", "")
@@ -1613,6 +1606,9 @@ class Session:
         if update_prefix_files:
             g_compatdata.setup_prefix()
 
+        if "nativevulkanloader" in self.compat_config:
+            self.dlloverrides["vulkan-1"] = "n"
+
         if "nod3d12" in self.compat_config:
             self.dlloverrides["d3d12"] = ""
             if "dxgi" in self.dlloverrides:
@@ -1628,11 +1624,12 @@ class Session:
             self.dlloverrides["d3d10"] = ""
             self.dlloverrides["dxgi"] = ""
 
-        if "nativevulkanloader" in self.compat_config:
-            self.dlloverrides["vulkan-1"] = "n"
-
         if "nod3d9" in self.compat_config:
             self.dlloverrides["d3d9"] = ""
+            self.dlloverrides["dxgi"] = ""
+
+        if "nod3d8" in self.compat_config:
+            self.dlloverrides["d3d8"] = ""
             self.dlloverrides["dxgi"] = ""
 
         if "wined3d9" in self.compat_config:
