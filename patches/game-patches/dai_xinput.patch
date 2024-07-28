@@ -24,7 +24,7 @@ index f91b65a5f56..02241110eae 100644
 +
 +    retValueWindow = NtUserGetGUIThreadInfo( GetCurrentThreadId(), &info ) ? info.hwndFocus : 0;
 +
-+    if ((sgi = getenv("SteamGameId")) && !strcmp(sgi, "1222690"))
++    if ((sgi = getenv("SteamGameId")) && !strcmp(sgi, "1222690")) {
 +        if (retValueWindow == 0 && prev != 0)
 +            NtUserAttachThreadInput(0, 0, 1);
 +        else
@@ -48,7 +48,7 @@ index d67f462359c..dee6c5acf57 100644
  #include "ntstatus.h"
  #define WIN32_NO_STATUS
  #include "win32u_private.h"
-@@ -596,6 +598,36 @@ HWND get_focus(void)
+@@ -596,6 +598,38 @@ HWND get_focus(void)
  BOOL WINAPI NtUserAttachThreadInput( DWORD from, DWORD to, BOOL attach )
  {
      BOOL ret;
@@ -56,6 +56,8 @@ index d67f462359c..dee6c5acf57 100644
 +    static DWORD fromThreadForHack = 0;
 +    static DWORD toThreadForHack = 0;
 +    static char processNameForHack[16];
++    static const char* DAIprocessName = "DragonAgeInquis";
++    static const char* DAIGameLoopName = "GameLoop";
 +    const char *sgi;
 +
 +    prctl(PR_GET_NAME, processNameForHack);
