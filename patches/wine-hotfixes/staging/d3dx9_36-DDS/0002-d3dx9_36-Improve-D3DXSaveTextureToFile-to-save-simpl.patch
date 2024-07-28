@@ -1,0 +1,117 @@
+From 28b0030ac5f486875dff6f5f34779844f1a031cf Mon Sep 17 00:00:00 2001
+From: Christian Costa <titan.costa@gmail.com>
+Date: Sun, 11 Jan 2015 16:29:30 +0100
+Subject: [PATCH] d3dx9_36: Improve D3DXSaveTextureToFile to save simple
+ texture to dds file.
+
+---
+ dlls/d3dx9_36/d3dx9_private.h |  2 ++
+ dlls/d3dx9_36/surface.c       | 62 +++++++++++++++++++++++++++++++++++
+ dlls/d3dx9_36/texture.c       |  5 +--
+ 3 files changed, 65 insertions(+), 4 deletions(-)
+
+diff --git a/dlls/d3dx9_36/d3dx9_private.h b/dlls/d3dx9_36/d3dx9_private.h
+index 34a9f6eec7f..e1fa072a121 100644
+--- a/dlls/d3dx9_36/d3dx9_private.h
++++ b/dlls/d3dx9_36/d3dx9_private.h
+@@ -178,6 +178,8 @@ HRESULT lock_surface(IDirect3DSurface9 *surface, const RECT *surface_rect, D3DLO
+         IDirect3DSurface9 **temp_surface, BOOL write);
+ HRESULT unlock_surface(IDirect3DSurface9 *surface, const RECT *surface_rect,
+         IDirect3DSurface9 *temp_surface, BOOL update);
++HRESULT save_dds_texture_to_memory(ID3DXBuffer **dst_buffer, IDirect3DBaseTexture9 *src_texture,
++                                    +    const PALETTEENTRY *src_palette);
+ HRESULT d3dx_pixels_init(const void *data, uint32_t row_pitch, uint32_t slice_pitch,
+         const PALETTEENTRY *palette, D3DFORMAT format, uint32_t left, uint32_t top, uint32_t right, uint32_t bottom,
+         uint32_t front, uint32_t back, struct d3dx_pixels *pixels);
+diff --git a/dlls/d3dx9_36/surface.c b/dlls/d3dx9_36/surface.c
+index ca40018af24..9ff5b4901b8 100644
+--- a/dlls/d3dx9_36/surface.c
++++ b/dlls/d3dx9_36/surface.c
+@@ -650,6 +650,68 @@ static HRESULT save_dds_surface_to_memory(ID3DXBuffer **dst_buffer, IDirect3DSur
+     return D3D_OK;
+ }
+ 
++static HRESULT get_surface(D3DRESOURCETYPE type, struct IDirect3DBaseTexture9 *tex,
++        int face, UINT level, struct IDirect3DSurface9 **surf)
++{
++    switch (type)
++    {
++        case D3DRTYPE_TEXTURE:
++            return IDirect3DTexture9_GetSurfaceLevel((IDirect3DTexture9*) tex, level, surf);
++        case D3DRTYPE_CUBETEXTURE:
++            return IDirect3DCubeTexture9_GetCubeMapSurface((IDirect3DCubeTexture9*) tex, face, level, surf);
++        default:
++            ERR("Unexpected texture type\n");
++            return E_NOTIMPL;
++    }
++}
++
++HRESULT save_dds_texture_to_memory(ID3DXBuffer **dst_buffer, IDirect3DBaseTexture9 *src_texture, const PALETTEENTRY *src_palette)
++{
++    HRESULT hr;
++    D3DRESOURCETYPE type;
++    UINT mip_levels;
++    IDirect3DSurface9 *surface;
++
++    type = IDirect3DBaseTexture9_GetType(src_texture);
++
++    if ((type !=  D3DRTYPE_TEXTURE) && (type != D3DRTYPE_CUBETEXTURE) && (type != D3DRTYPE_VOLUMETEXTURE))
++        return D3DERR_INVALIDCALL;
++
++    if (type == D3DRTYPE_CUBETEXTURE)
++    {
++        FIXME("Cube texture not supported yet\n");
++        return E_NOTIMPL;
++    }
++    else if (type == D3DRTYPE_VOLUMETEXTURE)
++    {
++        FIXME("Volume texture not supported yet\n");
++        return E_NOTIMPL;
++    }
++
++    mip_levels = IDirect3DTexture9_GetLevelCount(src_texture);
++
++    if (mip_levels > 1)
++    {
++        FIXME("Mipmap not supported yet\n");
++        return E_NOTIMPL;
++    }
++
++    if (src_palette)
++    {
++        FIXME("Saving surfaces with palettized pixel formats not implemented yet\n");
++        return E_NOTIMPL;
++    }
++
++    hr = get_surface(type, src_texture, D3DCUBEMAP_FACE_POSITIVE_X, 0, &surface);
++
++    if (SUCCEEDED(hr))
++    {
++        hr = save_dds_surface_to_memory(dst_buffer, surface, NULL);
++        IDirect3DSurface9_Release(surface);
++    }
++
++    return hr;
++}
+ HRESULT load_cube_texture_from_dds(IDirect3DCubeTexture9 *cube_texture, const void *src_data,
+     const PALETTEENTRY *palette, DWORD filter, DWORD color_key, const D3DXIMAGE_INFO *src_info)
+ {
+diff --git a/dlls/d3dx9_36/texture.c b/dlls/d3dx9_36/texture.c
+index 2ee79b51f79..7ceef158d07 100644
+--- a/dlls/d3dx9_36/texture.c
++++ b/dlls/d3dx9_36/texture.c
+@@ -1858,10 +1858,7 @@ HRESULT WINAPI D3DXSaveTextureToFileInMemory(ID3DXBuffer **dst_buffer, D3DXIMAGE
+     if (!dst_buffer || !src_texture) return D3DERR_INVALIDCALL;
+ 
+     if (file_format == D3DXIFF_DDS)
+-    {
+-        FIXME("DDS file format isn't supported yet\n");
+-        return E_NOTIMPL;
+-    }
++        return save_dds_texture_to_memory(dst_buffer, src_texture, src_palette);
+ 
+     type = IDirect3DBaseTexture9_GetType(src_texture);
+     switch (type)
+-- 
+2.40.1
+
