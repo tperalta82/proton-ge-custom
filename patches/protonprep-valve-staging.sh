@@ -194,7 +194,7 @@
     # mfplat-streaming-support -- interferes with proton's mfplat -- currently also disabled in upstream staging
     # wined3d-SWVP-shaders -- interferes with proton's wined3d -- currently also disabled in upstream staging
     # wined3d-Indexed_Vertex_Blending -- interferes with proton's wined3d -- currently also disabled in upstream staging
-    # ** d3dx9_36-DDS - applied manually
+    # d3dx9_36-DDS - incompatible with upstream proton 7/27/24
 
     echo "WINE: -STAGING- loader-KeyboardLayouts manually applied"
     patch -Np1 < ../patches/wine-hotfixes/staging/loader-KeyboardLayouts/0001-loader-Add-Keyboard-Layouts-registry-enteries.patch
@@ -255,10 +255,6 @@
     patch -Np1 < ../wine-staging/patches/fltmgr.sys-FltBuildDefaultSecurityDescriptor/0001-fltmgr.sys-Implement-FltBuildDefaultSecurityDescript.patch
     patch -Np1 < ../wine-staging/patches/fltmgr.sys-FltBuildDefaultSecurityDescriptor/0002-fltmgr.sys-Create-import-library.patch
     patch -Np1 < ../wine-staging/patches/fltmgr.sys-FltBuildDefaultSecurityDescriptor/0003-ntoskrnl.exe-Add-FltBuildDefaultSecurityDescriptor-t.patch
-    
-    echo "WINE: -STAGING- d3dx9_36-DDS manually applied"
-    patch -Np1 < ../patches/wine-hotfixes/staging/d3dx9_36-DDS/0001-d3dx9_36-Add-support-for-FOURCC-surface-to-save_dds_.patch
-    patch -Np1 < ../patches/wine-hotfixes/staging/d3dx9_36-DDS/0002-d3dx9_36-Improve-D3DXSaveTextureToFile-to-save-simpl.patch
 
 ### END WINE STAGING APPLY SECTION ###
 
