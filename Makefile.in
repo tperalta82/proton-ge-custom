@@ -1338,6 +1338,7 @@ $(PROTONFIXES_TARGET): $(addprefix $(SRCDIR)/,protonfixes)
 
 $(OBJ)/.build-protonfixes:
 	cd $(SRCDIR)/protonfixes && make
+	touch $(@)
 
 $(PROTONFIXES_TARGET): $(OBJ)/.build-protonfixes
 	cd $(SRCDIR)/protonfixes && make install
