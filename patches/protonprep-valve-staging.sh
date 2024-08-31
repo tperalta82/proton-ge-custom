@@ -289,13 +289,8 @@
     echo "WINE: -PENDING- Add TCP_KEEP patch (Star Citizen Launcher 2.0 fix)"
     patch -Np1 < ../patches/wine-hotfixes/pending/TCP_KEEP-fixup.patch
 
-    echo "WINE: -PENDING- shell32: Implement some file_operation apis. (Solo Leveling netmarble launcher)"
-    # https://gitlab.winehq.org/wine/wine/-/merge_requests/5671
-    patch -Np1 < ../patches/wine-hotfixes/pending/5671.patch
-
     echo "WINE: -PENDING- ncrypt: NCryptDecrypt implementation (PSN Login for Ghost of Tsushima)"
     patch -Np1 < ../patches/wine-hotfixes/pending/NCryptDecrypt_implementation.patch
-
 
     echo "WINE: -PENDING- DXGI_FORMAT_R8G8B8A8_UNORM: Suport for DXGI_FORMAT_R8G8B8A8_UNORM on d2d_wic_render_target_init (Alt:V GTA V coustom client)"
     patch -Np1 < ../patches/wine-hotfixes/pending/support_for_DXGI_FORMAT_R8G8B8A8_UNORM.patch
