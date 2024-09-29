@@ -267,6 +267,7 @@
     patch -Np1 < ../wine-staging/patches/fltmgr.sys-FltBuildDefaultSecurityDescriptor/0003-ntoskrnl.exe-Add-FltBuildDefaultSecurityDescriptor-t.patch
 
     echo "WINE: -STAGING- Staging manually applied"
+    patch -Np1 < ../patches/wine-hotfixes/staging/Staging/0001-ntdll-Print-a-warning-message-specifying-the-wine-st.patch
     patch -Np1 < ../patches/wine-hotfixes/staging/Staging/0002-winelib-Append-Staging-at-the-end-of-the-version-s.patch
 
 ### END WINE STAGING APPLY SECTION ###
