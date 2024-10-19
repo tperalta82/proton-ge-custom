@@ -23,8 +23,8 @@ index fbd2a7e75bf..e352131bc79 100644
 +    }
 +    __EXCEPT_PAGE_FAULT
 +    {
-+        SetLastError( ERROR_INVALID_PARAMETER );
-+        return 0;
++        FIXME("wsprintf page fault!\n");
++        return -1;
 +    }
 +    __ENDTRY
  
