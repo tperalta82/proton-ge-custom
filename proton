@@ -17,6 +17,7 @@ import subprocess
 import sys
 import tarfile
 import shlex
+import uuid
 
 from ctypes import CDLL
 from ctypes import CFUNCTYPE
@@ -42,7 +43,7 @@ from pathlib import Path
 #To enable debug logging, copy "user_settings.sample.py" to "user_settings.py"
 #and edit it if needed.
 
-CURRENT_PREFIX_VERSION="GE-Proton9-17"
+CURRENT_PREFIX_VERSION="GE-Proton9-18"
 
 PFX="Proton: "
 ld_path_var = "LD_LIBRARY_PATH"
