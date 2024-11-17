@@ -43,7 +43,7 @@ from pathlib import Path
 #To enable debug logging, copy "user_settings.sample.py" to "user_settings.py"
 #and edit it if needed.
 
-CURRENT_PREFIX_VERSION="GE-Proton9-20"
+CURRENT_PREFIX_VERSION="GE-Proton9-21"
 
 PFX="Proton: "
 ld_path_var = "LD_LIBRARY_PATH"
@@ -1164,9 +1164,12 @@ class CompatData:
                 if use_nvapi:
                     try_copy(g_proton.lib64_dir + "wine/nvapi/nvapi64.dll", "drive_c/windows/system32",
                             prefix=self.prefix_dir, track_file=tracked_files, link_debug=True)
+                    try_copy(g_proton.lib64_dir + "wine/nvapi/nvofapi64.dll", "drive_c/windows/system32",
+                            prefix=self.prefix_dir, track_file=tracked_files, link_debug=True)
                     try_copy(g_proton.lib_dir + "wine/nvapi/nvapi.dll", "drive_c/windows/syswow64",
                             prefix=self.prefix_dir, track_file=tracked_files, link_debug=True)
                     g_session.dlloverrides["nvapi64"] = "n"
+                    g_session.dlloverrides["nvofapi64"] = "n"
                     g_session.dlloverrides["nvapi"] = "n"
                     g_session.dlloverrides["nvcuda"] = "b"
                 else:
@@ -1183,11 +1186,14 @@ class CompatData:
 
                 # Try to detect known DLLs that ship with the NVIDIA Linux Driver
                 # and add them into the prefix
-                nvidia_wine_dll_dir = find_nvidia_wine_dll_dir()
-                if nvidia_wine_dll_dir:
+                if g_session.nvidia_wine_dll_dir:
                     for dll in ["_nvngx.dll", "nvngx.dll"]:
-                        try_copy(nvidia_wine_dll_dir + "/" + dll, "drive_c/windows/system32", optional=True,
-                                 prefix=self.prefix_dir, track_file=tracked_files, link_debug=True)
+                        try_copy(g_session.nvidia_wine_dll_dir + "/" + dll,
+                                 "drive_c/windows/system32",
+                                 optional=True,
+                                 prefix=self.prefix_dir,
+                                 track_file=tracked_files,
+                                 link_debug=True)
 
             setup_game_dir_drive()
             setup_steam_dir_drive()
@@ -1299,6 +1305,7 @@ def default_compat_config():
                 "2249070", #Strip Fighter ZERO
                 "2526380", #Sword of Convallaria
                 "6030", #Star Wars - Jedi Knight II: Jedi Outcast
+                "1845910", #Dragon Age: The Veilguard
                 ]:
             ret.add("gamedrive")
 
@@ -1329,6 +1336,7 @@ def default_compat_config():
                 "1060210", #Disaster Report 4: Summer Memories
                 "414740", #RAID: World War II
                 "201510", #Flatout 3
+                "1233880", #Disgaea 4 Complete+
                 ]:
             ret.add("nofsync")
             ret.add("noesync")
@@ -1357,6 +1365,8 @@ def default_compat_config():
                 "44350", #GRID 2
                 "2176900", #Fablecraft
                 "407810", #Hard Reset Redux
+                "2853730", #Skull and Bones
+                "233130", #Shadow Warrior
                 ]:
             ret.add("disablenvapi")
 
@@ -1391,6 +1401,12 @@ def default_compat_config():
                 "1818750", # MultiVersus
                 ]:
             ret.add("xalia")
+
+        if appid in [
+                "275850", #No Man's Sky
+                "2012840", #Portal with RTX
+                ]:
+            ret.add("nohardwarescheduling")
 
         if appid in [
                 "255960", #Bad Mojo Redux
@@ -1680,14 +1696,22 @@ class Session:
         if "xalia" in self.compat_config and "PROTON_USE_XALIA" not in self.env:
             self.env["PROTON_USE_XALIA"] = "1"
 
+        if "nohardwarescheduling" in self.compat_config and "WINE_DISABLE_HARDWARE_SCHEDULING" not in self.env:
+            self.env["WINE_DISABLE_HARDWARE_SCHEDULING"] = "1"
+
         if "PROTON_CRASH_REPORT_DIR" in self.env:
             self.env["WINE_CRASH_REPORT_DIR"] = self.env["PROTON_CRASH_REPORT_DIR"]
 
-        # NVIDIA software may check NVIDIA_WINE_DLL_DIR as a search-path for
-        # driver-provided DLLs for use by Proton/Wine.
-        nvidia_wine_dll_dir = find_nvidia_wine_dll_dir()
-        if nvidia_wine_dll_dir:
-            self.env["NVIDIA_WINE_DLL_DIR"] = nvidia_wine_dll_dir
+        # NVIDIA software may check for the "DriverStore" by querying the
+        # NGXCore\NGXPath registry key via `D3DDDI_QUERYREGISTRY_SERVICEKEY` for
+        # a given adapter. In the case where this path cannot be found, the
+        # `NVIDIA_WINE_DLL_DIR` environment variable is read as a fallback.
+        #
+        # TODO: Add support for populating NGXCore\NGXPath so we can remove the
+        # NGX copies done in setup_prefix(), and this environment variable.
+        self.nvidia_wine_dll_dir = find_nvidia_wine_dll_dir()
+        if self.nvidia_wine_dll_dir:
+            self.env["NVIDIA_WINE_DLL_DIR"] = self.nvidia_wine_dll_dir
 
         if "PROTON_LOG" in self.env and nonzero(self.env["PROTON_LOG"]):
             if self.setup_logging(append_forever=False):
