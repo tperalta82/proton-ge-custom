@@ -83,3 +83,7 @@
 [submodule "vosk-api"]
 	path = vosk-api
 	url = https://github.com/alphacep/vosk-api
+[submodule "piper"]
+	path = piper
+	url = https://github.com/shaunren/piper.git
+	branch = library
