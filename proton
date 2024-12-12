@@ -1291,6 +1291,10 @@ def default_compat_config():
                 "257420", #Serious Sam 4
                 ]:
             ret.add("hidevggpu")
+        if appid in [
+                "2217000", #Rivals of Aether II
+                ]:
+            ret.add("hideintelgpu")
 
         if appid in [
                 "1341820", #As Dusk falls
@@ -1312,6 +1316,7 @@ def default_compat_config():
                 "2526380", #Sword of Convallaria
                 "6030", #Star Wars - Jedi Knight II: Jedi Outcast
                 "1845910", #Dragon Age: The Veilguard
+                "2842040", #Star Wars Outlaws
                 ]:
             ret.add("gamedrive")
 
@@ -1524,6 +1529,8 @@ class Session:
         self.env["MEDIACONV_BLANK_VIDEO_FILE"] = g_proton.media_dir + "blank.mkv"
         self.env["MEDIACONV_BLANK_AUDIO_FILE"] = g_proton.media_dir + "blank.ptna"
 
+        self.env["ESPEAK_DATA_PATH"] = g_proton.dist_dir + "share"
+
         prepend_to_env_str(self.env, "PATH", g_proton.bin_dir, ":")
 
     def check_environment(self, env_name, config_name):
@@ -1619,6 +1626,7 @@ class Session:
         self.check_environment("PROTON_OLD_GL_STRING", "oldglstr")
         self.check_environment("PROTON_HIDE_NVIDIA_GPU", "hidenvgpu")
         self.check_environment("PROTON_HIDE_VANGOGH_GPU", "hidevggpu")
+        self.check_environment("PROTON_HIDE_INTEL_GPU", "hideintelgpu")
         self.check_environment("PROTON_SET_GAME_DRIVE", "gamedrive")
         self.check_environment("PROTON_SET_STEAM_DRIVE", "steamdrive")
         self.check_environment("PROTON_NO_XIM", "noxim")
@@ -1680,6 +1688,9 @@ class Session:
 
         if "hidevggpu" in self.compat_config:
             self.env["WINE_HIDE_VANGOGH_GPU"] = "1"
+
+        if "hideintelgpu" in self.compat_config:
+            self.env["WINE_HIDE_INTEL_GPU"] = "1"
 
         if "hidenvgpu" in self.compat_config and "forcenvapi" not in self.compat_config:
             self.env["WINE_HIDE_NVIDIA_GPU"] = "1"
