@@ -18,7 +18,7 @@
 	url = https://github.com/FNA-XNA/FAudio
 [submodule "protonfixes"]
 	path = protonfixes
-	url = https://github.com/open-wine-components/umu-protonfixes
+	url = https://github.com/tperalta82/umu-protonfixes.git
 [submodule "gstreamer"]
 	path = gstreamer
 	url = https://github.com/GStreamer/gstreamer.git
