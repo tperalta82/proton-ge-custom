@@ -1,6 +1,7 @@
 [submodule "wine"]
 	path = wine
 	url = https://github.com/ValveSoftware/wine
+	branch = bleeding-edge
 [submodule "wine-staging"]
 	path = wine-staging
 	url = https://github.com/wine-staging/wine-staging
@@ -18,7 +19,7 @@
 	url = https://github.com/FNA-XNA/FAudio
 [submodule "protonfixes"]
 	path = protonfixes
-	url = https://github.com/tperalta82/umu-protonfixes.git
+	url = https://github.com/Open-Wine-Components/umu-protonfixes
 [submodule "gstreamer"]
 	path = gstreamer
 	url = https://github.com/GStreamer/gstreamer.git
